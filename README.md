@@ -14,7 +14,7 @@
      - Signup box: Full Name, Matric, School Name, School Short name, Association Name, Association shortened name, Level, Constituency name, Department or Faculty option, Session
 - Add bank account details
      - Enter and verify account name compliance sake, changing it requires submission
-     - Edition of account number requires checking for bank account number, is it matches that of the local bank and does the name matches the association name
+     - Edition of account number requires checking for bank account number, is it matches that of the local bank and does the name match the association name
 - Add student's details submitted by students' class governors
      - The president/departmental president will see the start session button and select the session they are starting
      - The president gets the student's data from the departmental president populated for them
