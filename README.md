@@ -27,21 +27,21 @@ This project uses `python3.11` and `pipenv` for managing project dependencies. i
 
 Clone the repository
 ```bash
-$ git clone https://github.com/saintmalik/plix-backend
+git clone https://github.com/saintmalik/plix-backend
 ```
 Change directory to the cloned repository
 ```bash
-$ cd plix-backend
+cd plix-backend
 ```
 Install the project dependencies
 ```bash
-$ pipenv install
+pipenv install
 ```
 Activate the virtual environment shell
 ```bash
-$ pipenv shell
+pipenv shell
 ```
 Run the project
 ```bash
-$ python manage.py runserver
+python manage.py runserver
 ```
