@@ -1,4 +1,4 @@
-# plix-backend
+# plixa-backend
 
 ## Users End
 -  No auth
