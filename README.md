@@ -19,3 +19,29 @@
      - The president/departmental president will see the start session button and select the session they are starting
      - The president gets the student's data from the departmental president populated for them
 - Message/SMS option button to notify students who are yet to pay (proposed for v2)
+
+## Setup for development
+
+This project uses `python3.11` and `pipenv` for managing project dependencies. if you don't have `pipenv` installed globally, you can install it with
+`pip install pipenv`.
+
+Clone the repository
+```bash
+$ git clone https://github.com/saintmalik/plix-backend
+```
+Change directory to the cloned repository
+```bash
+$ cd plix-backend
+```
+Install the project dependencies
+```bash
+$ pipenv install
+```
+Activate the virtual environment shell
+```bash
+$ pipenv shell
+```
+Run the project
+```bash
+$ python manage.py runserver
+```
