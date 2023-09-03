@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+from datetime import timedelta
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,65 +22,80 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+t*3ula2ih3343oym3#_m=6_rg9qj&m@-4%uyk+7&p^!evkb^m'
+SECRET_KEY = "django-insecure-+t*3ula2ih3343oym3#_m=6_rg9qj&m@-4%uyk+7&p^!evkb^m"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    # LOCAL APPS
+    "user.apps.UserConfig",
+    "cluster.apps.ClusterConfig",
+    # THIRD PARTY APPS
+    "graphene_django",
+    "graphql_auth",
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
+    "djmoney",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'plix_backend.urls'
+ROOT_URLCONF = "plix_backend.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'plix_backend.wsgi.application'
+WSGI_APPLICATION = "plix_backend.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "plixadb",
+        "USER": "plixa",
+        "PASSWORD": "pLiXa3AcKeNd",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
     }
 }
+
+
+AUTH_USER_MODEL = "user.CustomUsers"
 
 
 # Password validation
@@ -86,16 +103,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -103,9 +120,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -115,9 +132,149 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+GRAPHENE = {
+    "SCHEMA_INDENT": 4,
+    "SCHEMA": "user.schema",
+    "MIDDLEWARE": ["graphql_jwt.middleware.JSONWebTokenMiddleware"],
+}
+
+
+GRAPHQL_AUTH = {
+    # USERNAME SESSION
+    "USERNAME_FIELD": [
+        "username",
+    ],
+    "EMAIL_FIELD": [
+        "email",
+    ],
+    # LOGIN PERMISSION SESSION
+    "LOGIN_ALLOWED_FIELDS": [
+        "email",
+        "username",
+        "phone_number",
+    ],
+    # PERMISSION FIELDS SESSION
+    "ALLOW_LOGIN_NOT_VERIFIED": False,
+    "ALLOW_PASSWORDLESS_REGISTRATION": False,
+    "ALLOW_DELETE_ACCOUNT": False,
+    # TOKEN EXPIRATION SESSION
+    "EXPIRATION_ACTIVATION_TOKEN": timedelta(minutes=30),
+    "EXPIRATION_PASSWORD_RESET_TOKEN": timedelta(minutes=30),
+    # PASSWORD SESSION
+    "PASSWORD_RESET_PATH_ON_EMAIL": "password-reset-verification",
+    # USER NODE QUERY SESSION
+    "USER_NODE_FILTER_FIELDS": {
+        "first_name": ["exact", "icontains", "istartswith"],
+        "last_name": ["exact", "icontains", "istartswith"],
+        "email": [
+            "exact",
+            "icontains",
+        ],
+        "username": [
+            "exact",
+            "icontains",
+            "istartswith",
+        ],
+        "is_active": [
+            "exact",
+        ],
+        "status__verified": [
+            "exact",
+        ],
+        "status__archived": [
+            "exact",
+        ],
+    },
+    "USER_NODE_EXCLUDE_FIELDS": [
+        "password",
+        "is_superuser",
+    ],
+    # REGISTRATION SESSION
+    "REGISTER_MUTATION_FIELDS": [
+        "email",
+        "username",
+        "first_name",
+        "last_name",
+        "phone_number",
+    ],
+    # UPDATE FIELDS SESSION
+    "UPDATE_FIELDS_DICT": [
+        "phone_number",
+        "email",
+        "postcode_zipcode",
+        "address_line_1",
+        "address_line_2",
+        "apt_number",
+        "state",
+        "town_city",
+        "country",
+        "staff_role",
+        "is_admin",
+        "is_verified",
+        "is_active",
+        "update_date",
+    ],
+    # EMAIL SESSION
+    "SEND_ACTIVATION_EMAIL": True,
+    "ACTIVATION_PATH_ON_EMAIL": "activate",
+    # 'EMAIL_ASYNC_TASK': 'utils.middleware.graphql_auth.graphql_auth_async_email',
+    # 'EMAIL_FROM': getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'noreply@plixa.com'),
+    # 'EMAIL_TEMPLATE_PASSWORD_RESET': "email/account_password_reset_email.html",
+    # 'EMAIL_TEMPLATE_ACTIVATION': "email/account_activation_email.html",
+    # 'EMAIL_SUBJECT_ACTIVATION': "email/account_activation_subject.txt",
+    # 'EMAIL_SUBJECT_PASSWORD_RESET': "email/account_password_reset_subject.txt",
+    # CUSTOME ERROR TYPE SESSION
+    "CUSTOM_ERROR_TYPE": "graphql_auth.types.ExpectedErrorType",
+}
+
+
+GRAPHQL_JWT = {
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.UpdateAccount",
+        "graphql_auth.mutations.DeleteAccount",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+        "graphql_auth.mutations.ResendActivationEmail",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.VerifyToken",
+    ],
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=20),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+}
+
+AUTHENTICATION_BACKENDS = {
+    # DJANGO AUTH BACKEND
+    "django.contrib.auth.backends.ModelBackend",
+    # GRAPHQL AUTH BACKEND
+    "graphql_auth.backends.GraphQLAuthBackend",
+}
+
+EMAIL_BACKEND = [
+    "django.core.mail.backends.console.EmailBackend",
+    # "django.core.mail.backends.smtp.EmailBackend",
+]
+
+# DEFAULT_FROM_EMAIL = "noreply@plixa.com"
+# EMAIL_HOST = "smtp.sendgrid.net"
+# EMAIL_HOST_USER = "apikey"
+# EMAIL_HOST_PASSWORD = "<sendgrid_password>"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+
+
+INTERNAL_IPS = ["127.0.0.1", "localhost"]

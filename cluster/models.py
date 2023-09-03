@@ -1,4 +1,8 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+from djmoney.money import Money
+from djmoney.models.validators import MinMoneyValidator, MaxMoneyValidator
+from djmoney.models.fields import MoneyField
 
 
 class AcceptablePayment(models.TextChoices):
@@ -20,9 +24,16 @@ class Cluster(models.Model):
     description = models.TextField(
         help_text="additional information about what bills the cluster is trying to collect"
     )
-    amount = models.DecimalField(
-        decimal_places=2,
+    amount = MoneyField(
+        _("amount"),
         max_digits=9,
+        decimal_places=2,
+        default_currency="NGN",
+        default=0.00,
+        validators=[
+            MinMoneyValidator(limit_value=0.00),
+            MaxMoneyValidator(limit_value=999.99),
+        ],
         help_text="the price tag the cluster aims to charge it's target audience",
     )
     min_acceptable_payment = models.CharField(
@@ -49,7 +60,7 @@ class Cluster(models.Model):
         help_text="if provided, specifies when a cluster should go offline, hence stop accepting payments.",
     )
     metadata = models.JSONField(
-        default={}, help_text="additional information which may be required"
+        default=dict, help_text="additional information which may be required"
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -61,9 +72,20 @@ class Withdrawal(models.Model):
     reference = models.CharField(max)
     # TODO: Associate clusters to the individual or organizations that own them.
     # beneficiary
-    amount = models.DecimalField()
+    amount = MoneyField(
+        _("withdrawal amount"),
+        max_digits=9,
+        decimal_places=2,
+        default_currency="NGN",
+        default=0.00,
+        validators=[
+            MinMoneyValidator(limit_value=0.00),
+            MaxMoneyValidator(limit_value=999.99),
+        ],
+        help_text="the price tag the cluster aims to charge it's target audience",
+    )
     metadata = models.JSONField(
-        default={}, help_text="additional information which may be required"
+        default=dict, help_text="additional information which may be required"
     )
     created_at = models.DateTimeField()
 
@@ -81,9 +103,20 @@ class Transaction(models.Model):
 
     reference = models.CharField()
     email = models.EmailField()
-    amount = models.DecimalField()
+    amount = MoneyField(
+        _("transaction amount"),
+        max_digits=9,
+        decimal_places=2,
+        default_currency="NGN",
+        default=0.00,
+        validators=[
+            MinMoneyValidator(limit_value=0.00),
+            MaxMoneyValidator(limit_value=999.99),
+        ],
+        help_text="the price tag the cluster aims to charge it's target audience",
+    )
     status = models.CharField()
     metadata = models.JSONField(
-        default={}, help_text="additional information which may be required"
+        default=dict, help_text="additional information which may be required"
     )
     created_at = models.DateTimeField()
