@@ -1,17 +1,17 @@
+from django import forms
 from django.contrib.auth.forms import (
     UserCreationForm,
     UserChangeForm,
     ReadOnlyPasswordHashField,
 )
-
-from .models import CustomUsers
-from django import forms
 from django.forms import ModelForm
+
+from .models import User
 
 
 class RegisterUserCreationForm(UserCreationForm):
     class Meta:
-        model = CustomUsers
+        model = User
         fields = (
             "first_name",
             "last_name",
@@ -54,7 +54,7 @@ class RegisterUserCreationForm(UserCreationForm):
 
 class LoginProfile(ModelForm):
     class Meta:
-        model = CustomUsers
+        model = User
         fields = ("email", "password")
 
         widgets = {
@@ -77,7 +77,7 @@ class RegisterUserChangeForm(UserChangeForm):
     password = ReadOnlyPasswordHashField()
 
     class Meta:
-        model = CustomUsers
+        model = User
         fields = (
             "phone_number",
             "email",

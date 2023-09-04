@@ -27,7 +27,10 @@ from .schema import SCHEMA
 admin.autodiscover()
 
 urlpatterns = [
-    path('admin/', custom_users.urls),
-    path('user/', include('user.urls', namespace='user')),
-    path('api/v1/graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=SCHEMA))),
+    path("admin/", custom_users.urls),
+    path("user/", include("user.urls", namespace="user")),
+    path(
+        "api/v1/graphql/",
+        csrf_exempt(GraphQLView.as_view(graphiql=True, schema=SCHEMA)),
+    ),
 ]

@@ -7,10 +7,10 @@ name = "pypi"
 django = "*"
 graphene = "*"
 django-graphql-auth = "*"
-django-graphql-jwt = "*"
-requests = "*"
+django-graphql-jwt = "==0.4.0"
 django-money = "*"
 psycopg2-binary = "*"
+python-dotenv = "*"
 
 [dev-packages]
 black = "*"

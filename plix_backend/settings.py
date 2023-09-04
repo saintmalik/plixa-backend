@@ -10,9 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
+from datetime import timedelta
 from pathlib import Path
 
-from datetime import timedelta
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-+t*3ula2ih3343oym3#_m=6_rg9qj&m@-4%uyk+7&p^!evkb^m"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.getenv("DJANGO_DEBUG") == "development" else False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -41,7 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # LOCAL APPS
     "user.apps.UserConfig",
-    "cluster.apps.ClusterConfig",
+    "cluster",
     # THIRD PARTY APPS
     "graphene_django",
     "graphql_auth",
@@ -85,17 +89,17 @@ WSGI_APPLICATION = "plix_backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "plixadb",
-        "USER": "plixa",
-        "PASSWORD": "pLiXa3AcKeNd",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+        "ENGINE": os.getenv("DJANGO_DATABASE_ENGINE"),
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
 
 
-AUTH_USER_MODEL = "user.CustomUsers"
+AUTH_USER_MODEL = "user.User"
 
 
 # Password validation
@@ -122,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Africa/Lagos"
 
 USE_I18N = True
 
