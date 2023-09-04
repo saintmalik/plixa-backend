@@ -15,7 +15,6 @@ class RegisterUserCreationForm(UserCreationForm):
         fields = (
             "first_name",
             "last_name",
-            "username",
             "middle_name",
             "email",
             "phone_number",
@@ -24,7 +23,6 @@ class RegisterUserCreationForm(UserCreationForm):
         widgets = {
             "first_name": forms.TextInput(),
             "last_name": forms.TextInput(),
-            "username": forms.TextInput(),
             "middle_name": forms.TextInput(),
             "email": forms.EmailInput(),
             "phone_number": forms.NumberInput(),
@@ -33,17 +31,15 @@ class RegisterUserCreationForm(UserCreationForm):
         labels = {
             "first_name": "first name",
             "last_name": "last name",
-            "username": "username",
-            "middl_ename": "middlename",
-            "email": "email",
-            "phone_number": "Phone number",
+            "middle_name": "middle name",
+            "email": "email address",
+            "phone_number": "phone number",
         }
 
     def clean_register_data(self):
         data = self.cleaned_data[
             "first_name",
             "last_name",
-            "username",
             "middle_name",
             "email",
             "phone_number",

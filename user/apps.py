@@ -7,5 +7,5 @@ class UserConfig(AppConfig):
     name = "user"
 
 
-class UsersAdminConfig(AdminConfig):
-    default_site = "user.admin.CustomPlixaAdmin"
+class UserAdminConfig(AdminConfig):
+    default_site = "user.admin.PlixaAdmin"

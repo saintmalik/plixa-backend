@@ -1,3 +1,6 @@
+import uuid
+
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from djmoney.models.fields import MoneyField
@@ -18,7 +21,10 @@ class ClusterStatus(models.TextChoices):
 class Cluster(models.Model):
     """Cluster is a representation of payment collections by an individual or an organization."""
 
-    # TODO: Associate clusters to the individual or organizations that own them.
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="clusters"
+    )
     name = models.CharField(max_length=128, help_text="the name of the payment cluster")
     description = models.TextField(
         help_text="additional information about what bills the cluster is trying to collect"
@@ -70,23 +76,25 @@ class Withdrawal(models.Model):
     cluster = models.ForeignKey(Cluster, on_delete=models.DO_NOTHING)
     reference = models.CharField(max)
     # TODO: Associate clusters to the individual or organizations that own them.
-    # beneficiary
+    beneficiary = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="withdrawals"
+    )
     amount = MoneyField(
-        _("withdrawal amount"),
+        _("withdrawn amount"),
         max_digits=9,
         decimal_places=2,
         default_currency="NGN",
         default=0.00,
         validators=[
             MinMoneyValidator(limit_value=0.00),
-            MaxMoneyValidator(limit_value=999.99),
+            MaxMoneyValidator(limit_value=9_999_999.99),
         ],
         help_text="the price tag the cluster aims to charge it's target audience",
     )
     metadata = models.JSONField(
         default=dict, help_text="additional information which may be required"
     )
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class TransactionStatus(models.TextChoices):
@@ -110,7 +118,7 @@ class Transaction(models.Model):
         default=0.00,
         validators=[
             MinMoneyValidator(limit_value=0.00),
-            MaxMoneyValidator(limit_value=999.99),
+            MaxMoneyValidator(limit_value=9_999_999.99),
         ],
         help_text="the price tag the cluster aims to charge it's target audience",
     )
@@ -118,4 +126,4 @@ class Transaction(models.Model):
     metadata = models.JSONField(
         default=dict, help_text="additional information which may be required"
     )
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)

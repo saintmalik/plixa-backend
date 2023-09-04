@@ -16,18 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 
-from user.admin import custom_users
-
-from .schema import SCHEMA
+from plix_backend.schema import SCHEMA
+from user.admin import user_admin
 
 admin.autodiscover()
 
 urlpatterns = [
-    path("admin/", custom_users.urls),
+    path("admin/", user_admin.urls),
     path("user/", include("user.urls", namespace="user")),
     path(
         "api/v1/graphql/",

@@ -1,33 +1,20 @@
 from django.apps import apps
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .forms import RegisterUserChangeForm, RegisterUserCreationForm
-from .models import User
-
-"""
-==================================================================================================
-    USER ADMINISTRATION SITE
-==================================================================================================
-"""
+from user.forms import RegisterUserChangeForm, RegisterUserCreationForm
+from user.models import User
 
 
-class CustomPlixaAdmin(admin.AdminSite):
+class PlixaAdmin(admin.AdminSite):
     site_header = "PLIXA ADMIN"
     site_title = "PLIXA ADMINISTRATION"
 
 
-custom_users = CustomPlixaAdmin(name="Plixa_Admin_Area")
+user_admin = PlixaAdmin(name="Plixa_Admin_Area")
 
 
-"""
-==================================================================================================
-    CUSTOM USER ADMIN
-==================================================================================================
-"""
-
-
-class CustomUserAdmin(UserAdmin):
+class UserAdmin(BaseUserAdmin):
     add_form = RegisterUserCreationForm
     form = RegisterUserChangeForm
     model = User
@@ -35,32 +22,27 @@ class CustomUserAdmin(UserAdmin):
     list_display = (
         "first_name",
         "last_name",
-        "username",
         "email",
         "phone_number",
-        "country",
-        "town_city",
         "staff_role",
         "is_admin",
         "is_active",
         "is_verified",
         "last_login",
-        "created_date",
-        "updated_date",
+        "created_at",
+        "last_modified",
     )
 
     list_filter = (
-        "username",
         "email",
-        "country",
         "phone_number",
         "staff_role",
         "is_admin",
         "is_active",
         "is_verified",
         "last_login",
-        "created_date",
-        "updated_date",
+        "created_at",
+        "last_modified",
     )
 
     list_per_page = 5
@@ -72,7 +54,6 @@ class CustomUserAdmin(UserAdmin):
                 "fields": (
                     "first_name",
                     "last_name",
-                    "username",
                     "email",
                     "phone_number",
                     "password",
@@ -100,7 +81,6 @@ class CustomUserAdmin(UserAdmin):
             "fields": (
                 "first_name",
                 "last_name",
-                "username",
                 "email",
                 "phone_number",
                 "password",
@@ -115,32 +95,26 @@ class CustomUserAdmin(UserAdmin):
 
     search_field = (
         "email",
-        "username",
         "first_name",
         "last_name",
         "phone_number",
         "is_admin",
         "is_active",
-        "state",
-        "country",
         "staff_role",
         "last_login",
-        "created_date",
+        "created_at",
     )
 
     ordering = (
         "email",
-        "username",
         "first_name",
         "last_name",
         "phone_number",
         "is_admin",
         "is_active",
-        "state",
-        "country",
         "staff_role",
         "last_login",
-        "created_date",
+        "created_at",
     )
 
     filter_horizontal = ()
@@ -153,8 +127,8 @@ graphql_authen = apps.get_app_config("graphql_auth")
 refresh_token = apps.get_app_config("refresh_token")
 
 for model_name, model in graphql_authen.models.items() | refresh_token.models.items():
-    custom_users.register(model)
+    user_admin.register(model)
 
 
 # Register your admin here.
-custom_users.register(User, CustomUserAdmin)
+user_admin.register(User, UserAdmin)

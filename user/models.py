@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from .manager import UserManager
+from user.manager import UserManager
 
 """
 User choice selection fields below
@@ -15,9 +15,6 @@ USER_PERMISSION_STATUS = (
     ("DPR", "DEPARTMENT PRESIDENT"),
     ("GAD", "GENERAL ADMIN"),
 )
-
-
-# Create your models here.
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -33,9 +30,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(
         _("last name"), max_length=200, blank=False, null=False
     )
-    username = models.CharField(
-        _("username"), max_length=200, blank=True, null=True, unique=True
-    )
     email = models.EmailField(
         _("email address"), max_length=200, blank=False, null=False, unique=True
     )
@@ -43,24 +37,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         _("phone number"), max_length=15, blank=False, null=False, unique=True
     )
     password = models.CharField(_("password"), max_length=128, blank=False, null=False)
-
-    # USER LOCATION
-    postcode_zipcode = models.CharField(
-        _("postcode"), max_length=9, blank=True, null=True
-    )
-    address_line_1 = models.CharField(
-        _("address line 1"), max_length=255, blank=True, null=True
-    )
-    address_line_2 = models.CharField(
-        _("address line 2"), max_length=255, blank=True, null=True
-    )
-    apt_number = models.CharField(_("building #"), max_length=10, blank=True, null=True)
-    state = models.CharField(_("state"), max_length=100, blank=True, null=True)
-    town_city = models.CharField(_("town, city"), max_length=100, blank=True, null=True)
-    country = models.CharField(_("country"), max_length=150, blank=True, null=True)
-    country_code = models.CharField(
-        _("country code"), max_length=6, blank=True, null=True
-    )
 
     # USER PERMISSION AND STATUS AND ROLE
     staff_role = models.CharField(
@@ -79,10 +55,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(
         _("last login"), auto_now=False, auto_now_add=False, blank=True, null=True
     )
-    created_date = models.DateTimeField(
+    created_at = models.DateTimeField(
         _("created date"), auto_now=False, auto_now_add=False, blank=True, null=True
     )
-    updated_date = models.DateTimeField(
+    last_modified = models.DateTimeField(
         _("updated date"), auto_now=False, auto_now_add=False, blank=True, null=True
     )
 
@@ -93,8 +69,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = [
         "first_name",
         "last_name",
-        "username",
-        "phone_number",
     ]
 
     class Meta:

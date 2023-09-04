@@ -182,11 +182,6 @@ GRAPHQL_AUTH = {
             "exact",
             "icontains",
         ],
-        "username": [
-            "exact",
-            "icontains",
-            "istartswith",
-        ],
         "is_active": [
             "exact",
         ],
