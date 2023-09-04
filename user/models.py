@@ -52,15 +52,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(_("superuser"), default=False)
 
     # USER ACCOUNT LOGIN AND CREATION DATE
-    last_login = models.DateTimeField(
-        _("last login"), auto_now=False, auto_now_add=False, blank=True, null=True
-    )
+    last_login = models.DateTimeField(_("last login"), blank=True, null=True)
     created_at = models.DateTimeField(
-        _("created date"), auto_now=False, auto_now_add=False, blank=True, null=True
+        _("created date"),
+        auto_now_add=True,
     )
-    last_modified = models.DateTimeField(
-        _("updated date"), auto_now=False, auto_now_add=False, blank=True, null=True
-    )
+    last_modified = models.DateTimeField(_("updated date"), auto_now=True)
 
     objects = UserManager()
 
