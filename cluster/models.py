@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from djmoney.money import Money
-from djmoney.models.validators import MinMoneyValidator, MaxMoneyValidator
 from djmoney.models.fields import MoneyField
+from djmoney.models.validators import MinMoneyValidator, MaxMoneyValidator
 
 
 class AcceptablePayment(models.TextChoices):
@@ -32,7 +31,7 @@ class Cluster(models.Model):
         default=0.00,
         validators=[
             MinMoneyValidator(limit_value=0.00),
-            MaxMoneyValidator(limit_value=999.99),
+            MaxMoneyValidator(limit_value=9_999_999.99),
         ],
         help_text="the price tag the cluster aims to charge it's target audience",
     )
