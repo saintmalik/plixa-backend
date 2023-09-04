@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    image: plixa-backend
+    container_name: plixa_web
+    command: python manage.py runserver
+    volumes:
+      - ".:/plixa_backend"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    env_file:
+      - .env
+
+  database:
+    image: postgres
+    container_name: plixa_db
+    ports:
+      - "5432"
+    restart: always
+    env_file:
+      - .env
