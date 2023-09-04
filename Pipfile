@@ -5,12 +5,12 @@ name = "pypi"
 
 [packages]
 django = "*"
-psycopg = "*"
 graphene = "*"
 django-graphql-auth = "*"
 django-graphql-jwt = "*"
 requests = "*"
 django-money = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 black = "*"
