@@ -14,9 +14,3 @@ class Query(UserQuery, MeQuery, graphene.ObjectType):
 
 
 SCHEMA = graphene.Schema(query=Query)
-
-"""
-===========================================================================
-    PLIXA SCHEMA
-===========================================================================
-"""

@@ -1,5 +1,5 @@
 """
-URL configuration for plix_backend project.
+URL configuration for plixa_backend project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 
-from plix_backend.schema import SCHEMA
+from plixa_backend.schema import SCHEMA
 from user.admin import user_admin
 
 admin.autodiscover()
