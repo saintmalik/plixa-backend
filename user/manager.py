@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
@@ -21,14 +19,9 @@ class UserManager(BaseUserManager):
             raise ValueError(_("users must have email address"))
 
         email = self.normalize_email(email)
-        created_date = str(datetime.now())
 
         user = self.model(
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            created_date=created_date,
-            **extra_fields
+            email=email, first_name=first_name, last_name=last_name, **extra_fields
         )
 
         user.set_password(password)
