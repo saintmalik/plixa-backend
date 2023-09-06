@@ -1,16 +1,9 @@
-FROM python:3.11-bullseye
+FROM tiangolo/uvicorn-gunicorn:python3.11
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+WORKDIR /app
 
-WORKDIR /plixa_backend
+COPY Pipfile Pipfile.lock /app/
+RUN pip install --upgrade pip
+RUN pip install pipenv && pipenv install --system
 
-COPY Pipfile Pipfile.lock /plixa_backend/
-
-RUN pip install --no-cache-dir pip
-
-RUN pip install --no-cache-dir pipenv
-
-RUN pipenv install --system
-
-COPY . .
+COPY . /app
