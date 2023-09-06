@@ -4,13 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
-graphene = "*"
-django-graphql-auth = "*"
-django-graphql-jwt = "==0.4.0"
-django-money = "*"
-psycopg2-binary = "*"
-python-dotenv = "*"
+fastapi = "*"
+uvicorn = "*"
 
 [dev-packages]
 black = "*"
