@@ -1,23 +1,19 @@
 services:
   web:
     build: .
-    image: plixa-backend
-    container_name: plixa_web
-    command: python manage.py runserver 0.0.0.0:8000
+    image: plixa-backend-fastapi
+    container_name: web
+    command: uvicorn main:app --host 0.0.0.0 --port 8082 --reload
     volumes:
-      - ".:/plixa_backend"
+      - ".:/app"
     ports:
-      - "8000:8000"
+      - "8082:8082"
     depends_on:
       - database
-    env_file:
-      - .env
 
   database:
-    image: postgres
-    container_name: plixa_db
-    ports:
-      - "5432"
+    image: mongo
+    container_name: db
     restart: always
     env_file:
       - .env
