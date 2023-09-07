@@ -2,7 +2,7 @@ services:
   web:
     build: .
     image: plixa-backend-fastapi
-    container_name: web
+    container_name: plixa-fastapi
     command: uvicorn main:app --host 0.0.0.0 --port 8082 --reload
     volumes:
       - ".:/app"
@@ -13,7 +13,9 @@ services:
 
   database:
     image: mongo
-    container_name: db
+    container_name: plixa-db-mongo
     restart: always
+    ports:
+      - "27017:27017"
     env_file:
       - .env
