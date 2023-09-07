@@ -2,17 +2,17 @@ from datetime import timedelta
 from typing import Annotated
 
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Security
 from fastapi.security import (
     OAuth2PasswordBearer,
     SecurityScopes,
     OAuth2PasswordRequestForm,
 )
-from jose import JWTError
+from jose import JWTError, jwt
 
-from db import user_collection
+from db import DBCollection, get_collection
 from models import CreateUserSchema, User, UserSchema
-from scopes import DEFAULT_USER_SCOPES
+from scopes import DEFAULT_USER_SCOPES, APIScope
 from settings import default_settings
 from utils import (
     get_password_hash,
@@ -30,6 +30,7 @@ oauth2_scheme = OAuth2PasswordBearer(
 async def get_current_user(
     security_scopes: SecurityScopes, token: Annotated[str, Depends(oauth2_scheme)]
 ):
+    user_collection = get_collection(DBCollection.USER)
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
@@ -55,7 +56,7 @@ async def get_current_user(
     if not user:
         raise credentials_exception
     if "all" in token_scopes:
-        return User.load_from_db(user)
+        return User.model_load(user)
     for scope in [scope for scope in security_scopes.scopes if scope != "all"]:
         if scope not in token_scopes:
             raise HTTPException(
@@ -63,12 +64,19 @@ async def get_current_user(
                 detail="Not enough permissions",
                 headers={"WWW-Authenticate": authenticate_value},
             )
-    return User.load_from_db(user)
+    return User.model_load(user)
 
 
 @auth_router.post("/create-user", status_code=status.HTTP_201_CREATED)
-async def create_user(user_data: CreateUserSchema):
+async def create_user(
+    user: Annotated[
+        User,
+        Security(get_current_user, scopes=[APIScope.ALL, APIScope.CREATE_USER]),
+    ],
+    user_data: CreateUserSchema,
+):
     # TODO: Protect this endpoint
+    user_collection = get_collection(DBCollection.USER)
     if user_data.password != user_data.confirm_password:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="password mismatch"
@@ -84,7 +92,7 @@ async def create_user(user_data: CreateUserSchema):
     user = User(**user_data)
     user = await user_collection.insert_one(user.model_dump())
     new_user = await user_collection.find_one({"_id": user.inserted_id})
-    return UserSchema(**User.load_from_db(new_user).model_dump())
+    return UserSchema(**User.model_load(new_user).model_dump())
 
 
 @auth_router.post("/access-token")
