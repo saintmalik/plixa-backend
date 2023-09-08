@@ -1,6 +1,4 @@
-# plixa-backend
-
-![image](https://www.freeiconspng.com/img/2757) Experimental
+# ![image](https://cdn2.iconfinder.com/data/icons/solid-glyphs-volume-1/256/zcaution-128.png) plixa-backend [Experimental]
 
 This is an experimental implementation of plixa-backend that uses FastAPI with MongoDb.
 Do not merge into `main` or `dev` branches
