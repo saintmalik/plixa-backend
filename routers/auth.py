@@ -14,10 +14,7 @@ from db import DBCollection, get_collection
 from models import CreateUserSchema, User, UserSchema
 from scopes import DEFAULT_USER_SCOPES, APIScope
 from settings import default_settings
-from utils import (
-    get_password_hash,
-    create_access_token,
-)
+from utils.auth import get_password_hash, create_access_token
 
 auth_router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -43,8 +40,8 @@ async def get_current_user(
     try:
         payload = jwt.decode(
             token,
-            default_settings.JWT_SECRET_KEY,
-            algorithms=[default_settings.JWT_ALGORITHM],
+            default_settings.JWT_SETTINGS.SECRET_KEY,
+            algorithms=[default_settings.JWT_SETTINGS.ALGORITHM],
         )
         user_id: str = payload.get("subject").get("user_id")
         token_scopes = payload.get("subject").get("scopes", [])
@@ -106,7 +103,7 @@ async def get_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depen
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(
-        minutes=default_settings.JWT_EXPIRES_DELTA_IN_MINUTES
+        minutes=default_settings.JWT_SETTINGS.EXPIRES_DELTA
     )
     token_data = {
         "subject": {

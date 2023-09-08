@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 from db import get_collection, DBCollection
-from utils import verify_password
+from utils.auth import verify_password
 
 
 class UserType(str, Enum):
