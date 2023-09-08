@@ -12,6 +12,7 @@ python-jose = {extras = ["cryptography"], version = "*"}
 passlib = {extras = ["bcrypt"], version = "*"}
 pydantic = {extras = ["email"], version = "*"}
 python-multipart = "*"
+jinja2 = "*"
 
 [dev-packages]
 black = "*"
