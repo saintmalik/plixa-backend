@@ -40,7 +40,7 @@ class Recipient(BaseModel):
 
     email: EmailStr
     context: dict = {}
-    attachments: list[Attachment] = []
+    attachments: list[Attachment] = []  # recipient specific email attachment
 
 
 class EmailContent(BaseModel):
@@ -48,7 +48,7 @@ class EmailContent(BaseModel):
     recipients: list[Recipient]
     subject: str
     template: Union[str, Path]
-    attachments: list[Attachment] = []
+    attachments: list[Attachment] = []  # attachments common to all recipients
 
     @field_validator("recipients")
     @classmethod
