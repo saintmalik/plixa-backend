@@ -9,7 +9,8 @@ from routers.user import user_router
 app = FastAPI(
     title="Plixa API",
     description=(
-        "The official REST API for Plixa (eliminating payment hurdles and receipt outage)."
+        "The official REST API for Plixa (eliminating payment hurdles and "
+        "receipt outage)."
         " Note that if you're using this OpenAPI documentation to hit protected routers"
         " the email address of the user should be provided in the username field"
     ),

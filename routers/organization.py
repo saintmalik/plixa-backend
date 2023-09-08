@@ -110,7 +110,7 @@ async def add_users_to_organization(
         users.append(User.model_load(user_in_db))
     valid_user_ids = [user.id for user in users]
     new_members = list(set(organization.members).union(set(valid_user_ids)))
-    result = await organization_collection.update_one(
+    await organization_collection.update_one(
         {"_id": ObjectId(organization_id)}, {"$set": {"members": new_members}}
     )
     organization_in_db = await organization_collection.find_one(
@@ -144,7 +144,7 @@ async def remove_users_remove_organization(
         users.append(User.model_load(user_in_db))
     valid_user_ids = [user.id for user in users]
     new_members = list(set(organization.members).difference(set(valid_user_ids)))
-    result = await organization_collection.update_one(
+    await organization_collection.update_one(
         {"_id": ObjectId(organization_id)}, {"$set": {"members": new_members}}
     )
     organization_in_db = await organization_collection.find_one(
