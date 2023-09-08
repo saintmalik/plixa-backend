@@ -4,7 +4,7 @@ import motor.motor_asyncio
 
 from settings import default_settings
 
-client = motor.motor_asyncio.AsyncIOMotorClient(default_settings.MONGODB_URL)
+client = motor.motor_asyncio.AsyncIOMotorClient(str(default_settings.MONGODB_DSN))
 
 default_db = client.plixa_db
 
