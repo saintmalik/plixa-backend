@@ -5,8 +5,8 @@ from fastapi import APIRouter, Security, HTTPException, status
 
 from db import get_collection, DBCollection
 from models import User, Organization, CreateOrganizationSchema
-from routes.auth import get_current_user
-from routes.cluster import cluster_router
+from routers.auth import get_current_user
+from routers.cluster import cluster_router
 from scopes import APIScope
 
 organization_router = APIRouter(prefix="/organizations", tags=["organizations"])
