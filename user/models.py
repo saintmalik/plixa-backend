@@ -86,3 +86,129 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+UNIVERSITY_CHOICES = (
+    ("eksu", "Ekiti State University"),
+    ("fuoye", "Federal University of Oye Ekiti"),
+    ("futa", "Federal University of Technology Akure"),
+    ("adopoly", "Federal Polytechnic Ado Ekiti"),
+    ("lasu", "Lagos State University"),
+    ("unilag", "University of Lagos"),
+)
+
+Faculty_Association = [
+    ("sossa", "Social Sciences Student Association"),
+    ("nabams", "National Association of Biochemistry Students"),
+    ("nuesa", "National Union of Engineering Students Association"),
+]
+
+Department_Association = [
+    ("naps1", "National Association of Psychology Students"),
+    ("naps2", "National Association of Political Students"),
+]
+
+
+class Department(models.Model):
+    id = models.UUIDField(
+        _("did"), primary_key=True, default=uuid.uuid4, editable=False
+    )
+    name = models.CharField(
+        _("department association"),
+        max_length=200,
+        blank=True,
+        null=True,
+        choices=Department_Association,
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class Faculty(models.Model):
+    id = models.UUIDField(
+        _("fid"), primary_key=True, default=uuid.uuid4, editable=False
+    )
+    name = models.CharField(
+        _("faculty association"),
+        max_length=200,
+        blank=True,
+        null=True,
+        choices=Faculty_Association,
+    )
+
+    president = models.ForeignKey(
+        User, related_name=_("president"), on_delete=models.DO_NOTHING
+    )
+    general_secretary = models.OneToOneField(
+        User, related_name=_("general_secretary"), on_delete=models.DO_NOTHING
+    )
+    treasurer = models.OneToOneField(
+        User, related_name=_("treasurer"), on_delete=models.DO_NOTHING
+    )
+
+    departments = models.ManyToManyField(Department, related_name=_("department"))
+
+    def __str__(self):
+        return self.name
+
+
+class Association(models.Model):
+    id = models.UUIDField(
+        _("aid"), primary_key=True, default=uuid.uuid4, editable=False
+    )
+    faculty_association = models.CharField(
+        _("association name"),
+        max_length=250,
+        blank=True,
+        null=True,
+    )
+    department_association = models.CharField(
+        _("department association"), max_length=250, blank=True, null=True
+    )
+
+
+class SchoolSession(models.Model):
+    id = models.UUIDField(
+        _("sid"), primary_key=True, default=uuid.uuid4, editable=False
+    )
+    school_calender = models.DateField(_("school session"), auto_now_add=True)
+
+    current_association = models.ForeignKey(
+        Association,
+        related_name="associations",
+        on_delete=models.DO_NOTHING,
+        help_text="current university session associations",
+    )
+
+    association_lead = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+
+    past_association = models.JSONField(
+        default=dict,
+        help_text="store information about past association and the president information",
+    )
+
+
+class University(models.Model):
+    id = models.UUIDField(
+        _("uid"), primary_key=True, default=uuid.uuid4, editable=False
+    )
+    name = models.CharField(
+        _("university name"),
+        max_length=250,
+        blank=True,
+        null=True,
+        choices=UNIVERSITY_CHOICES,
+    )
+    school_slug = models.SlugField(
+        _("school abbrevation"),
+        max_length=10,
+        blank=True,
+        null=True,
+        help_text="short name abbrevation of the school,  e.g EKSU represents Ekiti State University.",
+    )
+    faculty = models.ManyToManyField(Faculty, related_name=_("faculty"))
+
+    school_session = models.ForeignKey(
+        SchoolSession, related_name="session", on_delete=models.DO_NOTHING
+    )
