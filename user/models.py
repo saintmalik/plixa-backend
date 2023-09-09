@@ -17,6 +17,17 @@ USER_PERMISSION_STATUS = (
 )
 
 
+USER_ACADEMIC_LEVEL = (
+    (1, "100Level"),
+    (2, "200Level"),
+    (3, "300Level"),
+    (4, "400Level"),
+    (5, "500Level"),
+    (6, "600Level"),
+    (7, "700Level"),
+)
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(
         _("uid"), primary_key=True, default=uuid.uuid4, editable=False
@@ -37,6 +48,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         _("phone number"), max_length=15, blank=False, null=False, unique=True
     )
     password = models.CharField(_("password"), max_length=128, blank=False, null=False)
+
+    # USER ACADEMIC INFORMATION
+    matric_no = models.CharField(_("matric no"), max_length=9, blank=True, null=True)
+    level = models.PositiveSmallIntegerField(_("level"), choices=USER_ACADEMIC_LEVEL)
 
     # USER PERMISSION AND STATUS AND ROLE
     staff_role = models.CharField(
@@ -121,6 +136,20 @@ class Department(models.Model):
         choices=Department_Association,
     )
 
+    president = models.ForeignKey(
+        User, related_name=_("dept_president"), on_delete=models.CASCADE
+    )
+    general_secretary = models.OneToOneField(
+        User, related_name=_("dept_gen_sec"), on_delete=models.CASCADE
+    )
+    treasurer = models.OneToOneField(
+        User, related_name=_("dept_treasurer"), on_delete=models.CASCADE
+    )
+
+    constituency_name = models.CharField(
+        _("constituency name"), max_length=128, blank=True, null=True
+    )
+
     def __str__(self):
         return self.name
 
@@ -138,16 +167,20 @@ class Faculty(models.Model):
     )
 
     president = models.ForeignKey(
-        User, related_name=_("president"), on_delete=models.DO_NOTHING
+        User, related_name=_("president"), on_delete=models.CASCADE
     )
     general_secretary = models.OneToOneField(
-        User, related_name=_("general_secretary"), on_delete=models.DO_NOTHING
+        User, related_name=_("general_secretary"), on_delete=models.CASCADE
     )
     treasurer = models.OneToOneField(
-        User, related_name=_("treasurer"), on_delete=models.DO_NOTHING
+        User, related_name=_("treasurer"), on_delete=models.CASCADE
     )
 
     departments = models.ManyToManyField(Department, related_name=_("department"))
+
+    constituency_name = models.CharField(
+        _("constituency name"), max_length=128, blank=True, null=True
+    )
 
     def __str__(self):
         return self.name
@@ -181,7 +214,7 @@ class SchoolSession(models.Model):
         help_text="current university session associations",
     )
 
-    association_lead = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    association_lead = models.ForeignKey(User, on_delete=models.CASCADE)
 
     past_association = models.JSONField(
         default=dict,
