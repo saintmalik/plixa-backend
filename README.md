@@ -54,6 +54,16 @@ Activate the virtual environment shell
 pipenv shell
 ```
 
+Make migrations changes
+```bash
+python manage.py makemigrations
+```
+
+migrate the changes to the database
+```bash
+python manage.py migrate
+```
+
 Run the project
 
 ```bash

@@ -93,7 +93,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST"),
+        "HOST": '127.0.0.1', # ignore push
         "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
@@ -152,17 +152,13 @@ GRAPHENE = {
 
 
 GRAPHQL_AUTH = {
-    # USERNAME SESSION
-    "USERNAME_FIELD": [
-        "username",
-    ],
+    # EMAIL SESSION
     "EMAIL_FIELD": [
         "email",
     ],
     # LOGIN PERMISSION SESSION
     "LOGIN_ALLOWED_FIELDS": [
         "email",
-        "username",
         "phone_number",
     ],
     # PERMISSION FIELDS SESSION
@@ -199,7 +195,6 @@ GRAPHQL_AUTH = {
     # REGISTRATION SESSION
     "REGISTER_MUTATION_FIELDS": [
         "email",
-        "username",
         "first_name",
         "last_name",
         "phone_number",
@@ -208,13 +203,6 @@ GRAPHQL_AUTH = {
     "UPDATE_FIELDS_DICT": [
         "phone_number",
         "email",
-        "postcode_zipcode",
-        "address_line_1",
-        "address_line_2",
-        "apt_number",
-        "state",
-        "town_city",
-        "country",
         "staff_role",
         "is_admin",
         "is_verified",
