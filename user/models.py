@@ -112,13 +112,13 @@ UNIVERSITY_CHOICES = (
     ("unilag", "University of Lagos"),
 )
 
-Faculty_Association = [
+FACULTY_ASSOCIATION_CHOICES = [
     ("sossa", "Social Sciences Student Association"),
     ("nabams", "National Association of Biochemistry Students"),
     ("nuesa", "National Union of Engineering Students Association"),
 ]
 
-Department_Association = [
+DEPARTMENT_ASSOCIATION_CHOICES = [
     ("naps1", "National Association of Psychology Students"),
     ("naps2", "National Association of Political Students"),
 ]
@@ -133,7 +133,7 @@ class Department(models.Model):
         max_length=200,
         blank=True,
         null=True,
-        choices=Department_Association,
+        choices=DEPARTMENT_ASSOCIATION_CHOICES,
     )
 
     president = models.ForeignKey(
@@ -163,7 +163,7 @@ class Faculty(models.Model):
         max_length=200,
         blank=True,
         null=True,
-        choices=Faculty_Association,
+        choices=FACULTY_ASSOCIATION_CHOICES,
     )
 
     president = models.ForeignKey(
