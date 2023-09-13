@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # LOCAL APPS
     "user.apps.UserConfig",
     "cluster",
+    "schools",
     # THIRD PARTY APPS
     "graphene_django",
     "graphql_auth",
@@ -93,7 +94,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": '127.0.0.1', # ignore push
+        "HOST": "127.0.0.1",  # ignore push
         "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
