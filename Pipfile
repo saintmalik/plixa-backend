@@ -13,6 +13,7 @@ passlib = {extras = ["bcrypt"], version = "*"}
 pydantic = {extras = ["email"], version = "*"}
 python-multipart = "*"
 jinja2 = "*"
+gunicorn = "*"
 
 [dev-packages]
 black = "*"

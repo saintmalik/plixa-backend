@@ -1,1 +1,1 @@
-web: uvicorn main:app --host 0.0.0.0 --port 80
+web: gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --log-file -
