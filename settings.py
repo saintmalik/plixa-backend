@@ -27,7 +27,7 @@ class JWTSettings(BaseSettings):
     )
     SECRET_KEY: str
     ALGORITHM: str
-    EXPIRES_DELTA: str  # in minutes
+    EXPIRES_DELTA: int  # in minutes
 
 
 class Settings(BaseSettings):
