@@ -1,7 +1,10 @@
-from typing import Literal
+from typing import Literal, Annotated
 
-from pydantic import MongoDsn, Field
+from pydantic import Field, UrlConstraints
+from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+MongoSRVDsn = Annotated[MultiHostUrl, UrlConstraints(allowed_schemes=["mongodb+srv"])]
 
 
 class SMTPSettings(BaseSettings):
@@ -32,7 +35,7 @@ class Settings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
 
-    MONGODB_DSN: MongoDsn = Field(validation_alias="MONGODB_URL")
+    MONGODB_DSN: MongoSRVDsn = Field(validation_alias="MONGODB_URL")
     JWT_SETTINGS: JWTSettings = JWTSettings()
     SMTP_SETTINGS: SMTPSettings = SMTPSettings()
 
