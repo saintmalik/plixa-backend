@@ -11,7 +11,7 @@ from fastapi.security import (
 from jose import JWTError, jwt
 
 from db import DBCollection, get_collection
-from models import CreateUserSchema, User, UserSchema
+from models import CreateUserSchema, User, UserSchema, UserType
 from scopes import DEFAULT_USER_SCOPES, APIScope
 from settings import default_settings
 from utils.auth import get_password_hash, create_access_token
@@ -64,6 +64,31 @@ async def get_current_user(
     return User.model_load(user)
 
 
+@auth_router.post("/create-admin", status_code=status.HTTP_201_CREATED)
+async def create_plixa_superuser(
+    user_data: CreateUserSchema,
+):
+    """This endpoint is only available for development purposes. Do not use in production!"""
+    user_data.type = UserType.PLIXA_SUPERUSER
+    user_collection = get_collection(DBCollection.USER)
+    if user_data.password != user_data.confirm_password:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="password mismatch"
+        )
+    user_exist = await user_collection.find_one({"email": user_data.email})
+    if user_exist:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="user with this email address already exist",
+        )
+    user_data = user_data.model_dump(exclude={"confirm_password"})
+    user_data["password"] = get_password_hash(user_data["password"])
+    user = User(**user_data)
+    user = await user_collection.insert_one(user.model_dump())
+    new_user = await user_collection.find_one({"_id": user.inserted_id})
+    return UserSchema(**User.model_load(new_user).model_dump())
+
+
 @auth_router.post("/create-user", status_code=status.HTTP_201_CREATED)
 async def create_user(
     user: Annotated[
@@ -72,7 +97,6 @@ async def create_user(
     ],
     user_data: CreateUserSchema,
 ):
-    # TODO: Protect this endpoint
     user_collection = get_collection(DBCollection.USER)
     if user_data.password != user_data.confirm_password:
         raise HTTPException(
