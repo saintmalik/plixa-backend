@@ -58,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # USER PERMISSION AND STATUS AND ROLE
     staff_role = models.CharField(
-        _("user role"),
+        _("users role"),
         max_length=100,
         choices=UserRole.choices,
         blank=True,
@@ -86,18 +86,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     ]
 
     class Meta:
-        verbose_name = _("user")
+        verbose_name = _("users")
         verbose_name_plural = _("users")
 
     def __str__(self):
         return self.first_name
 
     def has_perm(self, perm, obj=None):
-        # Deos the user has specific permission, yes!
+        # Deos the users has specific permission, yes!
         return True
 
     def has_module_perms(self, app_label):
-        # Does the user have permissions to view app 'app_label'
+        # Does the users have permissions to view app 'app_label'
         return True
 
     @property

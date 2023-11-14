@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 class UserManager(BaseUserManager):
     use_in_migrations = True
     """
-    custom user model is extended from BaseUserManager to modified the default user manager
+    custom users model is extended from BaseUserManager to modified the default users manager
     """
 
     def create_user(
@@ -37,10 +37,10 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_active", True)
 
         if extra_fields.get("is_admin") is not True:
-            raise ValueError(_("user must have is_admin=True."))
+            raise ValueError(_("users must have is_admin=True."))
 
         if extra_fields.get("is_superuser") is not True:
-            raise ValueError(_("user must have is_superuser=True."))
+            raise ValueError(_("users must have is_superuser=True."))
 
         return self.create_user(email, first_name, last_name, password, **extra_fields)
 

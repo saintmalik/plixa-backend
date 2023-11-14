@@ -2,8 +2,7 @@ from django.urls import path
 
 from .views import HomeView
 
-
-app_name = "user"
+app_name = "users"
 
 
 urlpatterns = [
