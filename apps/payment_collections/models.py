@@ -25,7 +25,9 @@ class Cluster(models.Model):
     user = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="clusters"
     )
-    name = models.CharField(max_length=128, help_text="the name of the payment payment_collections")
+    name = models.CharField(
+        max_length=128, help_text="the name of the payment payment_collections"
+    )
     description = models.TextField(
         help_text="additional information about what bills the payment_collections is trying to collect"
     )

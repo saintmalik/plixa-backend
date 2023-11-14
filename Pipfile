@@ -8,6 +8,7 @@ django = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
 gunicorn = "*"
+djangorestframework = "*"
 
 [dev-packages]
 black = "*"
