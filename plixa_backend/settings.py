@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
-from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -43,15 +42,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # THIRD PARTY APPS
     # LOCAL APPS
     "user.apps.UserConfig",
     "cluster",
     "schools",
-    # THIRD PARTY APPS
-    "graphene_django",
-    "graphql_auth",
-    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
-    "djmoney",
 ]
 
 MIDDLEWARE = [
@@ -94,7 +89,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": "127.0.0.1",  # ignore push
+        "HOST": os.getenv("POSTGRES_HOST"),
         "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
@@ -143,126 +138,3 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
-GRAPHENE = {
-    "SCHEMA_INDENT": 4,
-    "SCHEMA": "user.schema",
-    "MIDDLEWARE": ["graphql_jwt.middleware.JSONWebTokenMiddleware"],
-}
-
-
-GRAPHQL_AUTH = {
-    # EMAIL SESSION
-    "EMAIL_FIELD": [
-        "email",
-    ],
-    # LOGIN PERMISSION SESSION
-    "LOGIN_ALLOWED_FIELDS": [
-        "email",
-        "phone_number",
-    ],
-    # PERMISSION FIELDS SESSION
-    "ALLOW_LOGIN_NOT_VERIFIED": False,
-    "ALLOW_PASSWORDLESS_REGISTRATION": False,
-    "ALLOW_DELETE_ACCOUNT": False,
-    # TOKEN EXPIRATION SESSION
-    "EXPIRATION_ACTIVATION_TOKEN": timedelta(minutes=30),
-    "EXPIRATION_PASSWORD_RESET_TOKEN": timedelta(minutes=30),
-    # PASSWORD SESSION
-    "PASSWORD_RESET_PATH_ON_EMAIL": "password-reset-verification",
-    # USER NODE QUERY SESSION
-    "USER_NODE_FILTER_FIELDS": {
-        "first_name": ["exact", "icontains", "istartswith"],
-        "last_name": ["exact", "icontains", "istartswith"],
-        "email": [
-            "exact",
-            "icontains",
-        ],
-        "is_active": [
-            "exact",
-        ],
-        "status__verified": [
-            "exact",
-        ],
-        "status__archived": [
-            "exact",
-        ],
-    },
-    "USER_NODE_EXCLUDE_FIELDS": [
-        "password",
-        "is_superuser",
-    ],
-    # REGISTRATION SESSION
-    "REGISTER_MUTATION_FIELDS": [
-        "email",
-        "first_name",
-        "last_name",
-        "phone_number",
-    ],
-    # UPDATE FIELDS SESSION
-    "UPDATE_FIELDS_DICT": [
-        "phone_number",
-        "email",
-        "staff_role",
-        "is_admin",
-        "is_verified",
-        "is_active",
-        "update_date",
-    ],
-    # EMAIL SESSION
-    "SEND_ACTIVATION_EMAIL": True,
-    "ACTIVATION_PATH_ON_EMAIL": "activate",
-    # 'EMAIL_ASYNC_TASK': 'utils.middleware.graphql_auth.graphql_auth_async_email',
-    # 'EMAIL_FROM': getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'noreply@plixa.com'),
-    # 'EMAIL_TEMPLATE_PASSWORD_RESET': "email/account_password_reset_email.html",
-    # 'EMAIL_TEMPLATE_ACTIVATION': "email/account_activation_email.html",
-    # 'EMAIL_SUBJECT_ACTIVATION': "email/account_activation_subject.txt",
-    # 'EMAIL_SUBJECT_PASSWORD_RESET': "email/account_password_reset_subject.txt",
-    # CUSTOME ERROR TYPE SESSION
-    "CUSTOM_ERROR_TYPE": "graphql_auth.types.ExpectedErrorType",
-}
-
-
-GRAPHQL_JWT = {
-    "JWT_ALLOW_ANY_CLASSES": [
-        "graphql_auth.mutations.Register",
-        "graphql_auth.mutations.VerifyAccount",
-        "graphql_auth.mutations.ObtainJSONWebToken",
-        "graphql_auth.mutations.UpdateAccount",
-        "graphql_auth.mutations.DeleteAccount",
-        "graphql_auth.mutations.RefreshToken",
-        "graphql_auth.mutations.RevokeToken",
-        "graphql_auth.mutations.ResendActivationEmail",
-        "graphql_auth.mutations.SendPasswordResetEmail",
-        "graphql_auth.mutations.PasswordReset",
-        "graphql_auth.mutations.VerifyToken",
-    ],
-    "JWT_VERIFY_EXPIRATION": True,
-    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_EXPIRATION_DELTA": timedelta(minutes=20),
-    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
-    "JWT_AUTH_HEADER_PREFIX": "Bearer",
-}
-
-AUTHENTICATION_BACKENDS = {
-    # DJANGO AUTH BACKEND
-    "django.contrib.auth.backends.ModelBackend",
-    # GRAPHQL AUTH BACKEND
-    "graphql_auth.backends.GraphQLAuthBackend",
-}
-
-EMAIL_BACKEND = [
-    "django.core.mail.backends.console.EmailBackend",
-    # "django.core.mail.backends.smtp.EmailBackend",
-]
-
-# DEFAULT_FROM_EMAIL = "noreply@plixa.com"
-# EMAIL_HOST = "smtp.sendgrid.net"
-# EMAIL_HOST_USER = "apikey"
-# EMAIL_HOST_PASSWORD = "<sendgrid_password>"
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-
-
-INTERNAL_IPS = ["127.0.0.1", "localhost"]
