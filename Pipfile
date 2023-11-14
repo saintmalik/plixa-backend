@@ -15,6 +15,7 @@ gunicorn = "*"
 
 [dev-packages]
 black = "*"
+ruff = "*"
 
 [requires]
 python_version = "3.11"
