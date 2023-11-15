@@ -3,7 +3,6 @@ import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -90,11 +89,8 @@ class Department(models.Model):
 
 
 class Association(models.Model):
-    id = models.UUIDField(
-        _("aid"), primary_key=True, default=uuid.uuid4, editable=False
-    )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(
-        _("association name"),
         max_length=250,
     )
     academic_session = models.PositiveSmallIntegerField(null=True, blank=True)
@@ -128,6 +124,4 @@ class Association(models.Model):
         help_text="store information about past association and the president information",
     )
 
-    constituency_name = models.CharField(
-        _("constituency name"), max_length=128, blank=True, null=True
-    )
+    constituency_name = models.CharField(max_length=128, blank=True, null=True)

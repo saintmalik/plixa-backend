@@ -2,9 +2,6 @@ import uuid
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.utils.translation import gettext_lazy as _
-from djmoney.models.fields import MoneyField
-from djmoney.models.validators import MinMoneyValidator, MaxMoneyValidator
 
 
 class AcceptablePayment(models.TextChoices):
@@ -13,35 +10,30 @@ class AcceptablePayment(models.TextChoices):
     QUARTER = "quarter"
 
 
-class ClusterStatus(models.TextChoices):
+class PaymentCollectionStatus(models.TextChoices):
     OFFLINE = "offline"
     ONLINE = "online"
 
 
-class Cluster(models.Model):
-    """Cluster is a representation of payment collections by an individual or an organization."""
+class PaymentCollection(models.Model):
+    """Payment collection is a representation of payment collections by an individual or an organization."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="clusters"
+        get_user_model(), on_delete=models.CASCADE, related_name="payment_collections"
     )
     name = models.CharField(
-        max_length=128, help_text="the name of the payment payment_collections"
+        max_length=128, help_text="the name of the payment collection"
     )
     description = models.TextField(
-        help_text="additional information about what bills the payment_collections is trying to collect"
+        help_text="additional information about what bills the payment collection is trying to collect"
     )
-    amount = MoneyField(
-        _("amount"),
-        max_digits=9,
-        decimal_places=2,
-        default_currency="NGN",
-        default=0.00,
-        validators=[
-            MinMoneyValidator(limit_value=0.00),
-            MaxMoneyValidator(limit_value=9_999_999.99),
-        ],
-        help_text="the price tag the payment_collections aims to charge it's target audience",
+    amount = models.IntegerField(
+        help_text=(
+            "the price tag the payment collections aims to charge it's target audience in the "
+            "currency's smallest denomination. e.g. If a payment collection accepts NGN, the"
+            " amount is expected to be in kobo"
+        ),
     )
     min_acceptable_payment = models.CharField(
         max_length=10,
@@ -54,8 +46,8 @@ class Cluster(models.Model):
     )
     status = models.CharField(
         max_length=10,
-        choices=ClusterStatus.choices,
-        default=ClusterStatus.OFFLINE,
+        choices=PaymentCollectionStatus.choices,
+        default=PaymentCollectionStatus.OFFLINE,
         help_text=(
             "this shows the state of the payment_collections and does not need to be modified directly. "
             "clusters are offline by default hence, the cannot accept hence they need to be "
@@ -73,25 +65,23 @@ class Cluster(models.Model):
 
 
 class Withdrawal(models.Model):
-    """Withdrawal is a representation of withdrawals made by an organization from a payment_collections as the name implies."""
+    """
+    Withdrawal is a representation of withdrawals made by an organization
+    from a payment_collections as the name implies.
+    """
 
-    cluster = models.ForeignKey(Cluster, on_delete=models.DO_NOTHING)
+    cluster = models.ForeignKey(PaymentCollection, on_delete=models.DO_NOTHING)
     reference = models.CharField(max)
     # TODO: Associate clusters to the individual or organizations that own them.
     beneficiary = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="withdrawals"
     )
-    amount = MoneyField(
-        _("withdrawn amount"),
-        max_digits=9,
-        decimal_places=2,
-        default_currency="NGN",
-        default=0.00,
-        validators=[
-            MinMoneyValidator(limit_value=0.00),
-            MaxMoneyValidator(limit_value=9_999_999.99),
-        ],
-        help_text="the price tag the payment_collections aims to charge it's target audience",
+    amount = models.IntegerField(
+        help_text=(
+            "the amount the owner of a payment collection wishes to withdraw from the collection in the "
+            "currency's smallest denomination. e.g. If a payment collection accepts NGN, the"
+            " amount is expected to be in kobo"
+        ),
     )
     metadata = models.JSONField(
         default=dict, help_text="additional information which may be required"
@@ -112,17 +102,12 @@ class Transaction(models.Model):
 
     reference = models.CharField()
     email = models.EmailField()
-    amount = MoneyField(
-        _("transaction amount"),
-        max_digits=9,
-        decimal_places=2,
-        default_currency="NGN",
-        default=0.00,
-        validators=[
-            MinMoneyValidator(limit_value=0.00),
-            MaxMoneyValidator(limit_value=9_999_999.99),
-        ],
-        help_text="the price tag the payment_collections aims to charge it's target audience",
+    amount = models.IntegerField(
+        help_text=(
+            "the amount the transaction processes in the "
+            "currency's smallest denomination. e.g. If a payment collection accepts NGN, the"
+            " amount is expected to be in kobo"
+        ),
     )
     status = models.CharField()
     metadata = models.JSONField(
