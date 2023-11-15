@@ -9,6 +9,7 @@ psycopg2-binary = "*"
 python-dotenv = "*"
 gunicorn = "*"
 djangorestframework = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 black = "*"
