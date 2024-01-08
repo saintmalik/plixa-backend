@@ -7,7 +7,19 @@ from django.utils.text import slugify
 User = get_user_model()
 
 
-class University(models.Model):
+class InstitutionType(models.TextChoices):
+    UNIVERSITY = "university"
+    POLYTECHNIC = "POLYTECHNIC"
+    COLLEGE_OF_EDUCATION = "COLLEGE_OF_EDUCATION"
+
+
+class InstitutionCategory(models.TextChoices):
+    FEDERAL = "FEDERAL"
+    STATE = "STATE"
+    PRIVATE = "PRIVATE"
+
+
+class Institution(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(
         max_length=250,
@@ -21,6 +33,8 @@ class University(models.Model):
         unique=True,
         help_text="The short unofficial names or abbreviation the university is known as e.g. eksu, adopoly, unilag",
     )
+    type = models.CharField(max_length=50, choices=InstitutionType.choices)
+    category = models.CharField(max_length=20, choices=InstitutionCategory.choices)
     slug = models.SlugField(blank=True)
 
     def __str__(self):
@@ -34,8 +48,8 @@ class University(models.Model):
 
 class Faculty(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    university = models.ForeignKey(
-        University, related_name="faculties", on_delete=models.CASCADE
+    institution = models.ForeignKey(
+        Institution, related_name="faculties", on_delete=models.CASCADE
     )
     name = models.CharField(max_length=250, help_text="The official name of the faulty")
     nickname = models.CharField(
@@ -46,7 +60,7 @@ class Faculty(models.Model):
     )
 
     def __str__(self):
-        return f"{str(self.university)} : {self.name}"
+        return f"{str(self.institution)} : {self.name}"
 
     class Meta:
         verbose_name_plural = "faculties"
@@ -54,7 +68,7 @@ class Faculty(models.Model):
         # the same university to have multiple faculties with the same name.
         constraints = [
             models.UniqueConstraint(
-                fields=["university", "name"], name="unique_faculties"
+                fields=["institution", "name"], name="unique_faculties"
             )
         ]
 
