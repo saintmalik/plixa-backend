@@ -14,21 +14,33 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from django.views.decorators.csrf import csrf_exempt
-from graphene_django.views import GraphQLView
+from django.urls import re_path, path
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from plixa_backend.schema import SCHEMA
-from user.admin import user_admin
-
-admin.autodiscover()
-
-urlpatterns = [
-    path("admin/", user_admin.urls),
-    path("user/", include("user.urls", namespace="user")),
-    path(
-        "api/v1/graphql/",
-        csrf_exempt(GraphQLView.as_view(graphiql=True, schema=SCHEMA)),
+v1_urlpatterns = [
+    path("api/v1/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # API Documentation
+    re_path(
+        r"^api/v1/schema/",
+        SpectacularAPIView.as_view(),
+        name="schema",
+    ),
+    re_path(
+        r"^api/v1/schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    re_path(
+        r"^api/v1/schema/redoc/",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc",
     ),
 ]
+
+urlpatterns = [] + v1_urlpatterns

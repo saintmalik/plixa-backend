@@ -5,16 +5,16 @@ name = "pypi"
 
 [packages]
 django = "*"
-graphene = "*"
-django-graphql-auth = "*"
-django-graphql-jwt = "==0.4.0"
-django-money = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
 gunicorn = "*"
+djangorestframework = "*"
+drf-spectacular = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 black = "*"
+ruff = "*"
 
 [requires]
 python_version = "3.11"
